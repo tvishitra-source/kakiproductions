@@ -16,11 +16,25 @@ const filters = [
 <Layout>
   <main>
     <section class="hero">
-      <h1>Kaki Productions</h1>
-      <p>Cinematic storytelling for modern brands.</p>
+      <video
+        class="hero-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        poster="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=80"
+      >
+        <source src="/videos/hero-bg.mp4" type="video/mp4" />
+      </video>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <h1>Kaki Productions</h1>
+        <p>Cinematic storytelling for modern brands.</p>
+        <button class="hero-btn" id="scroll-to-work">View Selected Work</button>
+      </div>
     </section>
 
-    <section class="work">
+    <section class="work" id="work">
       <h2>Our Work</h2>
 
       <div class="filters">
@@ -87,20 +101,94 @@ const filters = [
 
 <style>
   .hero {
-    background: var(--color-bg-alt);
-    color: var(--color-text-alt);
-    padding: 5rem 2rem;
+    position: relative;
+    height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .hero-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
     text-align: center;
+    color: #fff;
+    padding: 2rem;
+    opacity: 0;
+    animation: heroFadeIn 1.4s ease forwards;
+    animation-delay: 0.2s;
   }
 
-  .hero h1 {
-    font-size: 3rem;
-    margin-bottom: 0.5rem;
+  @keyframes heroFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
-  .hero p {
-    font-size: 1.2rem;
-    color: #ccc;
+  .hero-content h1 {
+    font-size: 3.2rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-content p {
+    font-size: 1.15rem;
+    color: #eee;
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+  }
+
+  .hero-btn {
+    background: none;
+    border: 1px solid #fff;
+    color: #fff;
+    padding: 0.8rem 2rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .hero-btn:hover {
+    background: #fff;
+    color: #000;
+  }
+
+  @media (max-width: 640px) {
+    .hero-content h1 {
+      font-size: 2.1rem;
+    }
+    .hero-content p {
+      font-size: 1rem;
+    }
   }
 
   .work {
@@ -356,4 +444,9 @@ const filters = [
 
   const allButton = document.querySelector<HTMLElement>('[data-filter="All"]');
   if (allButton) allButton.classList.add('active');
+
+  const scrollBtn = document.getElementById('scroll-to-work');
+  scrollBtn?.addEventListener('click', () => {
+    document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' });
+  });
 </script>
