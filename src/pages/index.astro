@@ -3,6 +3,14 @@ import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
 const projects = await getCollection('work');
+const filters = [
+  'All',
+  'Commercial',
+  'Brand Film',
+  'Public Service Announcement',
+  'Documentary',
+  'Corporate Film',
+];
 ---
 
 <Layout>
@@ -14,17 +22,64 @@ const projects = await getCollection('work');
 
     <section class="work">
       <h2>Our Work</h2>
+
+      <div class="filters">
+        {filters.map((f) => (
+          <button class="filter-btn" data-filter={f}>{f}</button>
+        ))}
+      </div>
+
       <div class="grid">
         {projects.map((project) => (
-          <a href={project.data.videoUrl} target="_blank" class="card">
-            <div class="media" data-video-id={project.data.videoId}>
+          <a
+          
+            href={project.data.videoUrl}
+            target="_blank"
+            class="card"
+            data-category={project.data.category}
+          >
+            <div class="media">
               <img src={project.data.thumbnail} alt={project.data.title} />
+              <div class="overlay"></div>
             </div>
-            <h3>{project.data.title}</h3>
-            <span class="tag">{project.data.category}</span>
-            <p>{project.data.description}</p>
+            <div class="info">
+              <h3>{project.data.title}</h3>
+              <span class="tag">{project.data.category}</span>
+            </div>
           </a>
         ))}
+      </div>
+    </section>
+
+    <section class="team">
+      <h2>Who We Are</h2>
+      <div class="team-grid">
+        <div class="team-member">
+          <div class="team-photo"></div>
+          <h3>Name Placeholder</h3>
+          <span class="role">Role Placeholder</span>
+        </div>
+        <div class="team-member">
+          <div class="team-photo"></div>
+          <h3>Name Placeholder</h3>
+          <span class="role">Role Placeholder</span>
+        </div>
+        <div class="team-member">
+          <div class="team-photo"></div>
+          <h3>Name Placeholder</h3>
+          <span class="role">Role Placeholder</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact">
+      <h2>Contact Us</h2>
+      <div class="contact-details">
+        <p><strong>Email:</strong> hello@kakiproductions.com</p>
+        <p><strong>Phone:</strong> +60 12-345 6789</p>
+      </div>
+      <div class="social">
+        <a href="https://instagram.com/kakiproductions" target="_blank">Instagram</a>
       </div>
     </section>
   </main>
@@ -49,9 +104,9 @@ const projects = await getCollection('work');
   }
 
   .work {
-    max-width: 1100px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 4rem 2rem;
+    padding: 5rem 2rem;
   }
 
   h2 {
@@ -71,31 +126,82 @@ const projects = await getCollection('work');
     background: var(--color-accent);
   }
 
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 2rem 0 3rem 0;
+  }
+
+  .filter-btn {
+    background: none;
+    border: 1px solid #ccc;
+    color: #555;
+    padding: 0.5rem 1.2rem;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .filter-btn.active {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #fff;
+  }
+
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 420px));
-    gap: 2rem;
-    margin-top: 2rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+  }
+
+  @media (max-width: 1024px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
   }
 
   .card {
     display: block;
     text-decoration: none;
     color: inherit;
-    transition: transform 0.2s ease;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
   }
 
-  .card:hover {
-    transform: translateY(-4px);
+  .card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .card.hidden-filter {
+    display: none;
   }
 
   .media {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
-    border-radius: 6px;
+    border-radius: 4px;
     overflow: hidden;
-    margin-bottom: 1rem;
     background: #000;
   }
 
@@ -106,112 +212,148 @@ const projects = await getCollection('work');
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
   }
 
-  .media .player-box {
+  .overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    transition: background 0.3s ease;
+  }
+
+  .card:hover .media img {
+    transform: scale(1.04);
+  }
+
+  .card:hover .overlay {
+    background: rgba(0, 0, 0, 0.25);
+  }
+
+  .info {
+    margin-top: 1.2rem;
   }
 
   .card h3 {
-    font-size: 1.3rem;
+    font-size: 1.15rem;
     margin: 0 0 0.5rem 0;
+    font-weight: 600;
   }
 
   .tag {
     display: inline-block;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--color-accent);
     border: 1px solid var(--color-accent);
-    padding: 0.25rem 0.7rem;
+    padding: 0.2rem 0.6rem;
     border-radius: 20px;
-    margin-bottom: 0.75rem;
   }
 
-  .card p {
-    color: #555;
-    font-size: 0.95rem;
+  .team {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem 2rem;
+  }
+
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .team-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .team-member {
+    text-align: center;
+  }
+
+  .team-photo {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    background: #eee;
+    margin-bottom: 1rem;
+  }
+
+  .team-member h3 {
+    font-size: 1.1rem;
+    margin: 0 0 0.3rem 0;
+  }
+
+  .team-member .role {
+    font-size: 0.85rem;
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .contact {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 2rem 6rem 2rem;
+    text-align: center;
+  }
+
+  .contact-details p {
+    font-size: 1.05rem;
+    margin: 0.5rem 0;
+  }
+
+  .social {
+    margin-top: 1.5rem;
+  }
+
+  .social a {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid var(--color-accent);
   }
 </style>
 
 <script>
-  let apiReady = false;
-  let apiLoading = false;
-  const pendingCallbacks: (() => void)[] = [];
+  const cards = document.querySelectorAll<HTMLElement>('.card');
+  const filterButtons = document.querySelectorAll<HTMLElement>('.filter-btn');
 
-  function loadYouTubeAPI(callback: () => void) {
-    if (apiReady) {
-      callback();
-      return;
-    }
-    pendingCallbacks.push(callback);
-    if (apiLoading) return;
-    apiLoading = true;
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15 }
+  );
 
-    const tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/iframe_api';
-    document.body.appendChild(tag);
+  cards.forEach((card) => revealObserver.observe(card));
 
-    (window as any).onYouTubeIframeAPIReady = () => {
-      apiReady = true;
-      pendingCallbacks.forEach((cb) => cb());
-      pendingCallbacks.length = 0;
-    };
-  }
+  filterButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterButtons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
 
-  const mediaBoxes = document.querySelectorAll<HTMLElement>('.media');
+      const selected = btn.getAttribute('data-filter');
 
-  mediaBoxes.forEach((box, index) => {
-    const videoId = box.getAttribute('data-video-id');
-    let hasPlayer = false;
-    let isHovering = false;
-
-    box.addEventListener('mouseenter', () => {
-      isHovering = true;
-      if (hasPlayer) return;
-
-      loadYouTubeAPI(() => {
-        if (!isHovering) return;
-        hasPlayer = true;
-
-        const playerDiv = document.createElement('div');
-        playerDiv.className = 'player-box';
-        const innerId = `yt-player-${index}`;
-        playerDiv.id = innerId;
-        box.appendChild(playerDiv);
-
-        new (window as any).YT.Player(innerId, {
-          videoId: videoId,
-          playerVars: {
-            autoplay: 1,
-            mute: 1,
-            loop: 1,
-            playlist: videoId,
-            controls: 0,
-            modestbranding: 1,
-          },
-          events: {
-            onError: () => {
-              playerDiv.remove();
-              hasPlayer = false;
-            },
-          },
-        });
+      cards.forEach((card) => {
+        const category = card.getAttribute('data-category');
+        if (selected === 'All' || category === selected) {
+          card.classList.remove('hidden-filter');
+        } else {
+          card.classList.add('hidden-filter');
+        }
       });
     });
-
-    box.addEventListener('mouseleave', () => {
-      isHovering = false;
-      const playerDiv = box.querySelector('.player-box');
-      if (playerDiv) {
-        playerDiv.remove();
-        hasPlayer = false;
-      }
-    });
   });
+
+  const allButton = document.querySelector<HTMLElement>('[data-filter="All"]');
+  if (allButton) allButton.classList.add('active');
 </script>
