@@ -1,0 +1,217 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const projects = await getCollection('work');
+---
+
+<Layout>
+  <main>
+    <section class="hero">
+      <h1>Kaki Productions</h1>
+      <p>Cinematic storytelling for modern brands.</p>
+    </section>
+
+    <section class="work">
+      <h2>Our Work</h2>
+      <div class="grid">
+        {projects.map((project) => (
+          <a href={project.data.videoUrl} target="_blank" class="card">
+            <div class="media" data-video-id={project.data.videoId}>
+              <img src={project.data.thumbnail} alt={project.data.title} />
+            </div>
+            <h3>{project.data.title}</h3>
+            <span class="tag">{project.data.category}</span>
+            <p>{project.data.description}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .hero {
+    background: var(--color-bg-alt);
+    color: var(--color-text-alt);
+    padding: 5rem 2rem;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero p {
+    font-size: 1.2rem;
+    color: #ccc;
+  }
+
+  .work {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    position: relative;
+    display: inline-block;
+  }
+
+  h2::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -8px;
+    width: 40px;
+    height: 3px;
+    background: var(--color-accent);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 420px));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+  }
+
+  .media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    background: #000;
+  }
+
+  .media img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .media .player-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .card h3 {
+    font-size: 1.3rem;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+    margin-bottom: 0.75rem;
+  }
+
+  .card p {
+    color: #555;
+    font-size: 0.95rem;
+  }
+</style>
+
+<script>
+  let apiReady = false;
+  let apiLoading = false;
+  const pendingCallbacks: (() => void)[] = [];
+
+  function loadYouTubeAPI(callback: () => void) {
+    if (apiReady) {
+      callback();
+      return;
+    }
+    pendingCallbacks.push(callback);
+    if (apiLoading) return;
+    apiLoading = true;
+
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.body.appendChild(tag);
+
+    (window as any).onYouTubeIframeAPIReady = () => {
+      apiReady = true;
+      pendingCallbacks.forEach((cb) => cb());
+      pendingCallbacks.length = 0;
+    };
+  }
+
+  const mediaBoxes = document.querySelectorAll<HTMLElement>('.media');
+
+  mediaBoxes.forEach((box, index) => {
+    const videoId = box.getAttribute('data-video-id');
+    let hasPlayer = false;
+    let isHovering = false;
+
+    box.addEventListener('mouseenter', () => {
+      isHovering = true;
+      if (hasPlayer) return;
+
+      loadYouTubeAPI(() => {
+        if (!isHovering) return;
+        hasPlayer = true;
+
+        const playerDiv = document.createElement('div');
+        playerDiv.className = 'player-box';
+        const innerId = `yt-player-${index}`;
+        playerDiv.id = innerId;
+        box.appendChild(playerDiv);
+
+        new (window as any).YT.Player(innerId, {
+          videoId: videoId,
+          playerVars: {
+            autoplay: 1,
+            mute: 1,
+            loop: 1,
+            playlist: videoId,
+            controls: 0,
+            modestbranding: 1,
+          },
+          events: {
+            onError: () => {
+              playerDiv.remove();
+              hasPlayer = false;
+            },
+          },
+        });
+      });
+    });
+
+    box.addEventListener('mouseleave', () => {
+      isHovering = false;
+      const playerDiv = box.querySelector('.player-box');
+      if (playerDiv) {
+        playerDiv.remove();
+        hasPlayer = false;
+      }
+    });
+  });
+</script>
