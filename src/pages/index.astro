@@ -328,11 +328,25 @@ const filters = [
 
   .avargal {
     position: relative;
-    background: url('/image/avargal2-bg.jpg') center/cover no-repeat;
-    color: var(--color-text-alt);
+    background-image: url('/image/avargal2-bg.jpg');
+    background-size: cover;
+    background-position: center 28%;
+    background-repeat: no-repeat;
+
+    min-height: 360px;
     padding: 6rem 2rem;
+
+    color: var(--color-text-alt);
     text-align: center;
     overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .avargal {
+        background-position: center 25%;
+        min-height: 420px;
+        padding: 5rem 1.5rem;
+    }
   }
 
   .avargal::before {
