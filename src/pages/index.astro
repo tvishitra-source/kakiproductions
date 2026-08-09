@@ -43,7 +43,8 @@ const filters = [
       </div>
 
       <div class="grid">
-        {projects.map((project) => (<a
+        {projects.map((project) => (
+          <a
           
             href={project.data.videoUrl}
             target="_blank"
@@ -63,24 +64,14 @@ const filters = [
       </div>
     </section>
 
-    <section class="avargal">
-      <div class="avargal-content">
-        <h2>MEET AVARGAL</h2>
-        <p>Cinematic pre-wedding films inspired by Tamil cinema</p>
-        <a href="https://instagram.com/avargal.stories" target="_blank" class="avargal-cta">
-          Discover AVARGAL →
-        </a>
-      </div>
-    </section>
-
     <section class="contact">
       <h2>Contact Us</h2>
       <div class="contact-details">
-        <p><strong>Email:</strong> hello@kakiproductions.my</p>
-        <p><strong>Phone:</strong> +60 16-326 5853</p>
+        <p><strong>Email:</strong> hello@kakiproductions.com</p>
+        <p><strong>Phone:</strong> +60 12-345 6789</p>
       </div>
       <div class="social">
-        <a href="https://instagram.com/kakiproductions.my" target="_blank">Instagram</a>
+        <a href="https://instagram.com/ts_mathan" target="_blank">Instagram</a>
       </div>
     </section>
   </main>
@@ -324,78 +315,6 @@ const filters = [
     border: 1px solid var(--color-accent);
     padding: 0.2rem 0.6rem;
     border-radius: 20px;
-  }
-
-  .avargal {
-    position: relative;
-    background-image: url('/image/avargal3-bg.jpg');
-    background-size: cover;
-    background-position: center 28%;
-    background-repeat: no-repeat;
-
-    min-height: 360px;
-    padding: 6rem 2rem;
-
-    color: var(--color-text-alt);
-    text-align: center;
-    overflow: hidden;
-}
-
-@media (max-width: 768px) {
-    .avargal {
-        background-position: center 25%;
-        min-height: 420px;
-        padding: 5rem 1.5rem;
-    }
-  }
-
-  .avargal::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-  }
-
-  .avargal-content {
-    position: relative;
-    z-index: 1;
-  }
-
-  .avargal-content {
-    max-width: 560px;
-    margin: 0 auto;
-  }
-
-  .avargal h2 {
-    font-size: 1.6rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    margin: 0 0 1.5rem 0;
-    color: #fff;
-  }
-
-  .avargal p {
-    font-size: 1.05rem;
-    line-height: 1.7;
-    color: #ccc;
-    font-weight: 300;
-    margin-bottom: 2.8rem;
-  }
-
-  .avargal-cta {
-     display: inline-block;
-    color: #f0d9b5;
-    text-decoration: none;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.3s ease, color 0.3s ease;
-  }
-
-  .avargal-cta:hover {
-    border-color: #f0d9b5;
-    color: #fff;
   }
 
   .contact {

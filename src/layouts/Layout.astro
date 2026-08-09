@@ -1,3 +1,5 @@
+---
+---
 <!doctype html>
 <html lang="en">
 	<head>
@@ -16,6 +18,14 @@
 		/>
 	</head>
 	<body>
+		<header class="site-header">
+			<div class="avargal-wrap">
+				<a href="https://instagram.com/avargal.stories" target="_blank" class="avargal-link">
+					அவர்கள் AVARGAL ↗
+				</a>
+				<span class="avargal-tooltip">Our sister label for cinematic pre-wedding films.</span>
+			</div>
+		</header>
 		<slot />
 	</body>
 </html>
@@ -54,4 +64,102 @@
 	a {
 		color: inherit;
 	}
+
+	.site-header {
+		position: absolute;
+		top: 0;
+		right: 0;
+		z-index: 50;
+		padding: 1.5rem 2rem;
+	}
+
+	.avargal-wrap {
+		position: relative;
+		display: inline-block;
+	}
+
+	.avargal-link {
+		font-family: var(--font-body);
+		font-size: 0.7rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: rgba(255, 255, 255, 0.85);
+		text-decoration: none;
+		border: 1px solid rgba(255, 255, 255, 0.35);
+		padding: 0.4rem 0.9rem;
+		border-radius: 30px;
+		transition: all 0.3s ease;
+	}
+
+	.avargal-link:hover {
+		color: #fff;
+		border-color: rgba(255, 255, 255, 0.8);
+		background: rgba(255, 255, 255, 0.08);
+	}
+
+	.avargal-tooltip {
+		position: absolute;
+		top: 120%;
+		right: 0;
+		white-space: nowrap;
+		font-size: 0.65rem;
+		letter-spacing: 0.02em;
+		text-transform: none;
+		color: #fff;
+		background: rgba(0, 0, 0, 0.85);
+		padding: 0.5rem 0.9rem;
+		border-radius: 6px;
+		opacity: 0;
+		pointer-events: none;
+		transform: translateY(-4px);
+		transition: opacity 0.25s ease, transform 0.25s ease;
+	}
+
+	.avargal-wrap:hover .avargal-tooltip {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	.avargal-wrap.tapped .avargal-tooltip {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	@media (max-width: 640px) {
+		.site-header {
+			padding: 1rem 1.2rem;
+		}
+		.avargal-link {
+			font-size: 0.6rem;
+			padding: 0.3rem 0.7rem;
+		}
+		.avargal-tooltip {
+			white-space: normal;
+			max-width: 200px;
+			font-size: 0.6rem;
+			right: 0;
+		}
+	}
 </style>
+
+<script>
+	const wrap = document.querySelector<HTMLElement>('.avargal-wrap');
+	const link = wrap?.querySelector<HTMLAnchorElement>('.avargal-link');
+
+	if (wrap && link) {
+		let tapped = false;
+
+		link.addEventListener('click', (e) => {
+			const isTouch = window.matchMedia('(hover: none)').matches;
+			if (isTouch && !tapped) {
+				e.preventDefault();
+				wrap.classList.add('tapped');
+				tapped = true;
+				setTimeout(() => {
+					wrap.classList.remove('tapped');
+					tapped = false;
+				}, 1800);
+			}
+		});
+	}
+</script>
