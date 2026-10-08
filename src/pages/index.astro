@@ -2,101 +2,405 @@
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
-const projects = await getCollection('work');
+const existingProjects = await getCollection('work');
+
+// Additional films. Existing content collection projects stay unchanged.
+const newProjects = [
+  {
+    data: {
+      title: 'K & K Signature Beauty Raya 2025: Misteri Kampung',
+      category: 'Commercial',
+      thumbnail: '/image/KKbeauty-thumbnail.jpg',
+      videoUrl: 'https://youtu.be/6vp1exoca1Q',
+    },
+  },
+  {
+    data: {
+      title: 'Ritelac Malaysia — Deepavali Film',
+      category: 'Commercial',
+      thumbnail: '/image/ritelac-deepavali-thumbnail.jpg',
+      videoUrl: '/videos/ritelac-deepavali-2025.mp4',
+    },
+  },
+];
+
+// Put BOH Tea first, followed by the two new campaigns and the remaining films.
+const allProjects = [...existingProjects, ...newProjects];
+const displayOrder = (title: string) => {
+  const t = title.toLowerCase();
+  if (t.includes('boh')) return 0;
+  if (t.includes('misteri kampung')) return 1;
+  if (t.includes('ritelac')) return 2;
+  if (t.includes('kawan')) return 3;
+  if (t.includes('notebook') || t.includes('note book')) return 4;
+  return 5;
+};
+const projects = [...allProjects].sort((a, b) =>
+  displayOrder(a.data.title) - displayOrder(b.data.title)
+);
+const cardTitle = (title: string) => {
+  const t = title.toLowerCase();
+  if (t.includes('misteri kampung')) return 'Misteri Kampung';
+  if (t.includes('ritelac')) return 'Ritelac — Deepavali Film';
+  return title;
+};
+
 const filters = [
   'All',
-  'Commercial',
-  'Brand Film',
-  'Public Service Announcement',
-  'Cinematography',
+  ...new Set(projects.map((project) => project.data.category)),
 ];
 ---
 
 <Layout>
   <main>
-    <section class="hero">
+    <!-- HERO -->
+    <section class="hero" id="top">
       <video
         class="hero-video"
         autoplay
         muted
         loop
         playsinline
-        poster="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=80"
+        preload="metadata"
+        aria-hidden="true"
       >
         <source src="/videos/hero-bg.mp4" type="video/mp4" />
       </video>
+
       <div class="hero-overlay"></div>
+      <div class="hero-grain"></div>
+
+      <div class="hero-brand">
+        <a href="#top" aria-label="Kaki Productions home">
+          kaki<span>.</span>
+        </a>
+        <small>PRODUCTIONS</small>
+      </div>
+
       <div class="hero-content">
-        <h1>Kaki Productions</h1>
-        <p>Cinematic storytelling for modern brands.</p>
-        <button class="hero-btn" id="scroll-to-work">View Selected Work</button>
-      </div>
-    </section>
+        <div class="hero-eyebrow">
+          <span class="eyebrow-dot"></span>
+          INDEPENDENT FILM PRODUCTION
+        </div>
 
-    <section class="work" id="work">
-      <h2>Our Work</h2>
+        <h1>
+          Stories worth<br />
+          <span>staying for.</span>
+        </h1>
 
-      <div class="filters">
-        {filters.map((f) => (
-          <button class="filter-btn" data-filter={f}>{f}</button>
-        ))}
-      </div>
+        <div class="hero-description">
+          <p>
+            Independent film production for brands,
+            agencies and storytellers. From first idea
+            to final frame.
+          </p>
 
-      <div class="grid">
-        {projects.map((project) => (
-          <a
-          
-            href={project.data.videoUrl}
-            target="_blank"
-            class="card"
-            data-category={project.data.category}
-          >
-            <div class="media">
-              <img src={project.data.thumbnail} alt={project.data.title} />
-              <div class="overlay"></div>
-            </div>
-            <div class="info">
-              <h3>{project.data.title}</h3>
-              <span class="tag">{project.data.category}</span>
-            </div>
+          <a href="#work" class="hero-link">
+            EXPLORE OUR FILMS
+            <span aria-hidden="true">↗</span>
           </a>
-        ))}
+        </div>
+      </div>
+
+      <div class="hero-bottom">
+        <span>MADE IN MALAYSIA / MADE TO MOVE</span>
+        <a href="#about">SCROLL TO EXPLORE ↓</a>
       </div>
     </section>
 
-    <section class="contact">
-      <h2>Contact Us</h2>
-      <div class="contact-details">
-        <p><strong>Email:</strong> hello@kakiproductions.com</p>
-        <p><strong>Phone:</strong> +60 12-345 6789</p>
+    <!-- ABOUT -->
+    <section class="about" id="about">
+    
+<video
+  class="about-video"
+  autoplay
+  muted
+  loop
+  playsinline
+  preload="metadata"
+  aria-hidden="true"
+>
+  <source src="/videos/about-bg.mp4" type="video/mp4" />
+</video>
+
+<div class="about-video-overlay" aria-hidden="true"></div>
+      <div class="section-index">
+        <span class="index-dot"></span>
+        01 / ABOUT THE STUDIO
       </div>
-      <div class="social">
-        <a href="https://instagram.com/ts_mathan" target="_blank">Instagram</a>
+
+      <div class="about-content">
+        <h2>
+          We like our films<br />
+          with a little <span>character.</span>
+        </h2>
+
+        <div class="about-bottom">
+          <span class="asterisk" aria-hidden="true">✳</span>
+
+          <p>
+            Kaki Productions is an independent production
+            house creating commercials, brand films and
+            visual stories. We bring ideas to life through
+            thoughtful direction, strong visuals and
+            end-to-end production.
+          </p>
+        </div>
       </div>
+    </section>
+
+    <!-- SELECTED WORK -->
+    
+<section class="work" id="work">
+  <div class="work-heading">
+    <div>
+      <span class="section-index">
+        <span class="index-dot"></span>
+        02 / THE FILMS
+      </span>
+
+      <h2>Selected <span>work.</span></h2>
+    </div>
+
+    <p>
+      A collection of stories<br />
+      told through moving images.
+    </p>
+  </div>
+
+  <div class="filters" aria-label="Filter projects">
+    {filters.map((filter) => (
+      <button
+        type="button"
+        class="filter-btn"
+        data-filter={filter}
+        aria-pressed={filter === 'All' ? 'true' : 'false'}
+      >
+        {filter}
+      </button>
+    ))}
+  </div>
+
+  <div class="project-grid">
+    {projects.map((project, index) => (
+      <a
+        href={project.data.videoUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class:list={["project-card", { "project-featured": index === 0 }]}
+        data-category={project.data.category}
+        aria-label={`Watch ${project.data.title}`}
+      >
+        <div class="project-media">
+          {index === 0 && <span class="featured-label">FEATURED COMMERCIAL</span>}
+          <img
+            src={project.data.thumbnail}
+            alt={project.data.title}
+            loading="lazy"
+          />
+          <div class="project-overlay"></div>
+          <span class="view-project">WATCH FILM ↗</span>
+        </div>
+        <div class="project-info">
+          <div class="project-title">
+            <span>{String(index + 1).padStart(2, '0')}</span>
+            <h3>{cardTitle(project.data.title)}</h3>
+          </div>
+          <span class="project-category">{project.data.category}</span>
+        </div>
+      </a>
+    ))}
+  </div>
+</section>
+
+    <!-- SERVICES -->
+    <section class="services" id="services">
+      <div class="section-index">
+        <span class="index-dot"></span>
+        03 / WHAT WE DO
+      </div>
+
+      <div class="services-layout">
+        <div class="services-heading">
+          <h2>
+            The whole<br />
+            <span>picture.</span>
+          </h2>
+
+          <p>
+            From a passing thought to something
+            worth watching. We handle the entire
+            filmmaking process.
+          </p>
+        </div>
+
+        <div class="services-list">
+          <div class="service-item">
+            <span>01</span>
+            <h3>Creative Development</h3>
+            
+          </div>
+
+          <div class="service-item">
+            <span>02</span>
+            <h3>Pre-Production</h3>
+            
+          </div>
+
+          <div class="service-item">
+            <span>03</span>
+            <h3>Film Production</h3>
+            
+          </div>
+
+          <div class="service-item">
+            <span>04</span>
+            <h3>Post-Production</h3>
+            
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="contact" id="contact">
+      <div class="contact-glow" aria-hidden="true"></div>
+
+      <div class="contact-top">
+        <span class="section-index">
+          <span class="index-dot"></span>
+          04 / THE NEXT PROJECT
+        </span>
+
+        <span class="contact-studio">
+          KAKI PRODUCTIONS
+        </span>
+      </div>
+
+      <div class="contact-content">
+        <div class="contact-glass">
+          <div class="glass-shine" aria-hidden="true"></div>
+
+          <div class="contact-inner">
+            <span class="contact-kicker">
+              THE NEXT STORY STARTS HERE
+            </span>
+
+            <h2>
+              Your idea.<br />
+              <span>Our next film.</span>
+            </h2>
+
+            <p>
+              Commercials, campaigns, collaborations.
+              Tell us what you're imagining.
+            </p>
+
+            <a
+              class="contact-cta"
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=kakiproduction00%40gmail.com&su=Project%20Enquiry%20-%20Kaki%20Productions"
+target="_blank"
+rel="noopener noreferrer"
+            >
+              <span>EMAIL US</span>
+              <span aria-hidden="true">↗</span>
+            </a>      
+<a
+  href="https://wa.me/60163265853?text=Hi%20Kaki%20Productions%2C%20I%27d%20like%20to%20enquire%20about%20a%20project."
+  target="_blank"
+  rel="noopener noreferrer"
+  class="contact-whatsapp"
+>
+  WHATSAPP US ↗
+</a>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <span>
+          © {new Date().getFullYear()} KAKI PRODUCTIONS
+        </span>
+
+        <a
+          href="https://instagram.com/ts_mathan"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          INSTAGRAM ↗
+        </a>
+
+        <a href="#top">BACK TO TOP ↑</a>
+      </footer>
     </section>
   </main>
 </Layout>
 
 <style>
+  .contact-whatsapp {
+  display: inline-block;
+  margin-top: 1.5rem;
+  color: #c4c9d3;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.contact-whatsapp:hover {
+  color: #f2644b;
+}
+  :global(html) {
+    scroll-behavior: smooth;
+  }
+
+  :global(body) {
+    background: #0b0d12;
+    color: #f6f6f4;
+  }
+
+  /* SHARED */
+
+  .section-index {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    line-height: 1.5;
+  }
+
+  .index-dot,
+  .eyebrow-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #f2644b;
+    flex-shrink: 0;
+  }
+
+  /* HERO */
+
   .hero {
     position: relative;
-    height: 85vh;
+    min-height: 100vh;
+    min-height: 100svh;
     display: flex;
     align-items: center;
-    justify-content: center;
     overflow: hidden;
-    background: #000;
+    background: #101115;
   }
 
   .hero-video {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    transform: translate(-50%, -50%);
+    inset: 0;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     z-index: 0;
   }
@@ -104,25 +408,160 @@ const filters = [
   .hero-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.55);
     z-index: 1;
+    background:
+      linear-gradient(
+        105deg,
+        rgba(7, 9, 14, 0.88) 0%,
+        rgba(13, 16, 23, 0.52) 55%,
+        rgba(13, 16, 23, 0.15) 100%
+      ),
+      linear-gradient(
+        to top,
+        rgba(5, 7, 12, 0.65),
+        transparent 40%
+      );
+  }
+
+  .hero-grain {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.08;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E");
+  }
+
+  .hero-brand {
+    position: absolute;
+    top: 2rem;
+    left: 5vw;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+
+  .hero-brand a {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -0.09em;
+    text-decoration: none;
+    color: #f6f6f4;
+  }
+
+  .hero-brand a span {
+    color: #f2644b;
+  }
+
+  .hero-brand small {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.56rem;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    margin-top: 0.4rem;
   }
 
   .hero-content {
     position: relative;
-    z-index: 2;
-    text-align: center;
-    color: #fff;
-    padding: 2rem;
-    opacity: 0;
-    animation: heroFadeIn 1.4s ease forwards;
-    animation-delay: 0.2s;
+    z-index: 3;
+    width: 100%;
+    max-width: 1200px;
+    padding: 10rem 5vw 8rem;
+    box-sizing: border-box;
+    animation: heroReveal 1.2s ease both;
   }
 
-  @keyframes heroFadeIn {
+  .hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: #dddcd8;
+  }
+
+  .hero h1 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(3.5rem, 7.5vw, 8.5rem);
+    font-weight: 600;
+    letter-spacing: -0.075em;
+    line-height: 0.98;
+    margin: 2.3rem 0 2rem;
+  }
+
+  .hero h1 span {
+    font-family: 'DM Sans', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: -0.065em;
+    color: #f6f6f4;
+  }
+
+  .hero-description {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+    max-width: 850px;
+  }
+
+  .hero-description p {
+    font-family: 'DM Sans', sans-serif;
+    max-width: 410px;
+    font-size: 0.95rem;
+    line-height: 1.85;
+    color: #d4d6db;
+    margin: 0;
+  }
+
+  .hero-link {
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    border-bottom: 1px solid #f2644b;
+    padding-bottom: 0.75rem;
+    color: #f6f6f4;
+  }
+
+  .hero-link span {
+    color: #f2644b;
+    font-size: 1.2rem;
+  }
+
+  .hero-bottom {
+    position: absolute;
+    bottom: 2rem;
+    left: 5vw;
+    right: 5vw;
+    z-index: 3;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    color: #c1c1c0;
+  }
+
+  .hero-bottom a {
+    text-decoration: none;
+  }
+
+  @keyframes heroReveal {
     from {
       opacity: 0;
-      transform: translateY(16px);
+      transform: translateY(25px);
     }
     to {
       opacity: 1;
@@ -130,244 +569,865 @@ const filters = [
     }
   }
 
-  .hero-content h1 {
-    font-size: 3.2rem;
-    margin-bottom: 0.75rem;
-    letter-spacing: 0.02em;
+  /* ABOUT — GLOSSY GUNMETAL */
+
+  .about {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 3rem;
+    padding: 9rem 6vw;
+    color: #f6f6f4;
+
+    background:
+      radial-gradient(
+        ellipse at 80% 0%,
+        rgba(93, 107, 132, 0.25),
+        transparent 55%
+      ),
+      linear-gradient(
+        135deg,
+        #252b36 0%,
+        #12151c 100%
+      );
   }
 
-  .hero-content p {
-    font-size: 1.15rem;
-    color: #eee;
-    margin-bottom: 2.5rem;
-    font-weight: 300;
+  .about-content h2 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(2.8rem, 5vw, 6rem);
+    font-weight: 600;
+    letter-spacing: -0.065em;
+    line-height: 1.1;
+    margin: 0 0 3rem;
   }
 
-  .hero-btn {
-    background: none;
-    border: 1px solid #fff;
-    color: #fff;
-    padding: 0.8rem 2rem;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  .about-content h2 span {
+    font-family: 'DM Sans', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    color: #f2644b;
   }
 
-  .hero-btn:hover {
-    background: #fff;
-    color: #000;
+  .about-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 3rem;
   }
 
-  @media (max-width: 640px) {
-    .hero-content h1 {
-      font-size: 2.1rem;
-    }
-    .hero-content p {
-      font-size: 1rem;
-    }
+  .asterisk {
+    font-size: 3rem;
+    line-height: 1;
+    color: #f2644b;
   }
+
+  .about-bottom p {
+    font-family: 'DM Sans', sans-serif;
+    max-width: 490px;
+    font-size: 1rem;
+    line-height: 1.9;
+    color: #c4c9d3;
+    margin: 0;
+  }
+
+  /* WORK — GLOSSY GRAPHITE */
 
   .work {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 5rem 2rem;
+    background:
+      radial-gradient(
+        ellipse at 85% 5%,
+        rgba(75, 86, 108, 0.22),
+        transparent 48%
+      ),
+      linear-gradient(
+        145deg,
+        #101115 0%,
+        #252933 52%,
+        #101115 100%
+      );
+    color: #f6f6f4;
+    padding: 8rem 6vw 10rem;
   }
 
-  h2 {
-    font-size: 1.8rem;
-    margin-bottom: 2rem;
-    position: relative;
-    display: inline-block;
+  .work-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 2rem;
+    margin-bottom: 3rem;
   }
 
-  h2::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -8px;
-    width: 40px;
-    height: 3px;
-    background: var(--color-accent);
+  .work-heading h2 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(3.5rem, 7vw, 8rem);
+    font-weight: 600;
+    letter-spacing: -0.075em;
+    line-height: 1;
+    margin: 1rem 0 0;
+  }
+
+  .work-heading h2 span {
+    font-family: 'DM Sans', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+  }
+
+  .work-heading p {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: #a7aab1;
+    text-align: right;
   }
 
   .filters {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
-    margin: 2rem 0 3rem 0;
+    gap: 0.6rem;
+    margin-bottom: 3rem;
   }
 
   .filter-btn {
-    background: none;
-    border: 1px solid #ccc;
-    color: #555;
-    padding: 0.5rem 1.2rem;
-    border-radius: 30px;
-    font-size: 0.85rem;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #c2c4ca;
+    padding: 0.7rem 1.1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.67rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
     cursor: pointer;
     transition: all 0.25s ease;
   }
 
-  .filter-btn:hover {
-    border-color: var(--color-accent);
-    color: var(--color-accent);
-  }
-
+  .filter-btn:hover,
   .filter-btn.active {
-    background: var(--color-accent);
-    border-color: var(--color-accent);
-    color: #fff;
+    background: #f2644b;
+    color: #101115;
+    border-color: #f2644b;
   }
 
-  .grid {
+  .project-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 3rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4rem 2rem;
   }
 
-  @media (max-width: 1024px) {
-    .grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2rem;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .grid {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-  }
-
-  .card {
+  .project-card {
     display: block;
     text-decoration: none;
     color: inherit;
-    cursor: pointer;
     opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+    transform: translateY(25px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
   }
 
-  .card.visible {
+  .project-card.visible {
     opacity: 1;
     transform: translateY(0);
   }
 
-  .card.hidden-filter {
+  /* Curated portfolio: featured film spans the full desktop grid. */
+  .project-card.project-featured {
+    grid-column: 1 / -1;
+  }
+
+  .project-card.project-featured .project-media {
+    aspect-ratio: 16 / 7;
+  }
+
+  .project-card.project-featured .project-title h3 {
+    font-size: clamp(1.5rem, 2.3vw, 2.2rem);
+  }
+
+  .featured-label {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    z-index: 2;
+    padding: 0.65rem 0.85rem;
+    background: rgba(12, 14, 19, 0.75);
+    color: #f6f6f4;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    pointer-events: none;
+  }
+
+  .project-card.hidden-filter {
     display: none;
   }
 
-  .media {
+  .project-media {
     position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    border-radius: 4px;
+    aspect-ratio: 16 / 10;
     overflow: hidden;
-    background: #000;
+    background: #292d36;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    box-shadow:
+      0 18px 50px rgba(0, 0, 0, 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    transition:
+      box-shadow 0.35s ease,
+      border-color 0.35s ease;
   }
 
-  .media img {
-    position: absolute;
-    top: 0;
-    left: 0;
+  .project-media img {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition: transform 0.6s ease;
   }
 
-  .overlay {
+  .project-overlay {
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0);
-    transition: background 0.3s ease;
+    transition: background 0.4s ease;
   }
 
-  .card:hover .media img {
-    transform: scale(1.04);
-  }
-
-  .card:hover .overlay {
-    background: rgba(0, 0, 0, 0.25);
-  }
-
-  .info {
-    margin-top: 1.2rem;
-  }
-
-  .card h3 {
-    font-size: 1.15rem;
-    margin: 0 0 0.5rem 0;
-    font-weight: 600;
-  }
-
-  .tag {
-    display: inline-block;
+  .view-project {
+    position: absolute;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    font-family: 'DM Sans', sans-serif;
     font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--color-accent);
-    border: 1px solid var(--color-accent);
-    padding: 0.2rem 0.6rem;
-    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: #fff;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
   }
+
+  .project-card:hover .project-media {
+    border-color: rgba(255, 255, 255, 0.32);
+    box-shadow:
+      0 25px 65px rgba(0, 0, 0, 0.38),
+      0 0 22px rgba(242, 100, 75, 0.07);
+  }
+
+  .project-card:hover .project-media img {
+    transform: scale(1.05);
+  }
+
+  .project-card:hover .project-overlay {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .project-card:hover .view-project {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .project-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-top: 1.2rem;
+  }
+
+  .project-title {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+  }
+
+  .project-title > span {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.65rem;
+    color: #f2644b;
+  }
+
+  .project-title h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    margin: 0;
+  }
+
+  .project-category {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #a7aab1;
+    text-align: right;
+  }
+
+  /* SERVICES — REFLECTIVE STEEL */
+
+  .services {
+    background:
+      radial-gradient(
+        ellipse at 10% 0%,
+        rgba(100, 111, 132, 0.18),
+        transparent 55%
+      ),
+      linear-gradient(
+        125deg,
+        #20242c,
+        #111318 80%
+      );
+    color: #f6f6f4;
+    padding: 9rem 6vw;
+  }
+
+  .services-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    margin-top: 3rem;
+  }
+
+  .services-heading h2 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(3.5rem, 6vw, 7rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.075em;
+    margin: 0 0 2rem;
+  }
+
+  .services-heading h2 span {
+    font-family: 'DM Sans', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+  }
+
+  .services-heading p {
+    max-width: 400px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.9;
+    color: #b9bdc5;
+  }
+
+  .service-item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .service-item:first-child {
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .service-item > span:first-child {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.65rem;
+    color: #f2644b;
+  }
+
+  .service-item h3 {
+    flex: 1;
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(1rem, 1.5vw, 1.4rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    margin: 0;
+  }
+
+  .service-arrow {
+    color: #f2644b;
+  }
+
+  /* CONTACT — GLOSSY GLASS CINEMA */
 
   .contact {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 3rem 2rem 6rem 2rem;
-    text-align: center;
+    position: relative;
+    isolation: isolate;
+    min-height: 85vh;
+    min-height: 85svh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 3rem 6vw 2rem;
+    color: #f6f6f4;
+
+    background:
+      radial-gradient(
+        ellipse at 75% 25%,
+        rgba(91, 107, 142, 0.38),
+        transparent 55%
+      ),
+      radial-gradient(
+        ellipse at 10% 90%,
+        rgba(242, 100, 75, 0.12),
+        transparent 45%
+      ),
+      linear-gradient(
+        135deg,
+        #1c222d 0%,
+        #0b0d12 65%,
+        #171b25 100%
+      );
   }
 
-  .contact-details p {
-    font-size: 1.05rem;
-    margin: 0.5rem 0;
+  .contact-glow {
+    position: absolute;
+    top: -30%;
+    right: -15%;
+    width: 75vw;
+    height: 75vw;
+    max-width: 950px;
+    max-height: 950px;
+    border-radius: 50%;
+
+    background: radial-gradient(
+      circle,
+      rgba(138, 161, 203, 0.18) 0%,
+      rgba(74, 91, 124, 0.1) 35%,
+      transparent 70%
+    );
+
+    filter: blur(50px);
+    pointer-events: none;
+    z-index: -1;
   }
 
-  .social {
-    margin-top: 1.5rem;
+  .contact-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
   }
 
-  .social a {
-    color: var(--color-accent);
-    text-decoration: none;
+  .contact-studio {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.65rem;
     font-weight: 600;
-    border-bottom: 1px solid var(--color-accent);
+    letter-spacing: 0.14em;
+    color: #aeb4c0;
   }
+
+  .contact-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 5rem 0;
+    text-align: left;
+  }
+
+  .contact-glass {
+    position: relative;
+    width: min(100%, 1000px);
+    overflow: hidden;
+    border-radius: 14px;
+
+    background:
+      linear-gradient(
+        130deg,
+        rgba(255, 255, 255, 0.12) 0%,
+        rgba(255, 255, 255, 0.045) 35%,
+        rgba(255, 255, 255, 0.015) 100%
+      );
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+
+    box-shadow:
+      0 30px 90px rgba(0, 0, 0, 0.38),
+      inset 0 1px 0 rgba(255, 255, 255, 0.26),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+
+    transition:
+      border-color 0.35s ease,
+      box-shadow 0.35s ease;
+  }
+
+  .contact-glass:hover {
+    border-color: rgba(255, 255, 255, 0.35);
+
+    box-shadow:
+      0 40px 100px rgba(0, 0, 0, 0.48),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
+  .glass-shine {
+    position: absolute;
+    top: -50%;
+    left: -35%;
+    width: 75%;
+    height: 180%;
+    transform: rotate(25deg);
+
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.065),
+      transparent
+    );
+
+    pointer-events: none;
+  }
+
+  .contact-inner {
+    position: relative;
+    z-index: 1;
+    padding: clamp(2rem, 6vw, 5rem);
+  }
+
+  .contact-kicker {
+    display: inline-block;
+    margin-bottom: 2.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    color: #bfc7d5;
+  }
+
+  .contact-content h2 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(3.1rem, 7.5vw, 8rem);
+    font-weight: 600;
+    letter-spacing: -0.075em;
+    line-height: 1.02;
+    margin: 0 0 2rem;
+  }
+
+  .contact-content h2 span {
+    font-family: 'DM Sans', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    color: #f2644b;
+  }
+
+  .contact-content p {
+    max-width: 490px;
+    margin: 0 0 3rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    line-height: 1.85;
+    color: #c4c9d3;
+  }
+
+  .contact-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    width: min(100%, 650px);
+    box-sizing: border-box;
+    padding: 1.4rem 0;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.24);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.24);
+
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    color: #f6f6f4;
+
+    transition:
+      border-color 0.3s ease,
+      color 0.3s ease;
+  }
+
+  .contact-cta:hover {
+    border-color: #f2644b;
+    color: #ffffff;
+  }
+
+  .contact-cta span:last-child {
+    color: #f2644b;
+    font-size: 1.7rem;
+    transition: transform 0.3s ease;
+  }
+
+  .contact-cta:hover span:last-child {
+    transform: translate(4px, -4px);
+  }
+
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding-top: 1.5rem;
+    margin-top: auto;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: #aeb4c0;
+  }
+
+  .footer a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.25s ease;
+  }
+
+  .footer a:hover {
+    color: #f2644b;
+  }
+
+  /* RESPONSIVE */
+
+  @media (max-width: 900px) {
+    .about,
+    .services-layout {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero-brand {
+      top: 1.3rem;
+      left: 1.5rem;
+    }
+
+    .hero-brand a {
+      font-size: 1.9rem;
+    }
+
+    .hero-content {
+      padding: 9rem 1.5rem 7rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(3.2rem, 11vw, 5rem);
+    }
+
+    .hero-eyebrow {
+      font-size: 0.56rem;
+      letter-spacing: 0.08em;
+    }
+
+    .hero-description {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2rem;
+    }
+
+    .hero-bottom {
+      left: 1.5rem;
+      right: 1.5rem;
+      bottom: 1.5rem;
+      font-size: 0.5rem;
+    }
+
+    .about,
+    .work,
+    .services,
+    .contact {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+
+    .about,
+    .services {
+      padding-top: 6rem;
+      padding-bottom: 6rem;
+    }
+
+    .work {
+      padding-top: 6rem;
+      padding-bottom: 6rem;
+    }
+
+    .project-card.project-featured {
+      grid-column: auto;
+    }
+
+    .project-card.project-featured .project-media {
+      aspect-ratio: 16 / 10;
+    }
+
+    .featured-label {
+      top: 0.75rem;
+      left: 0.75rem;
+      font-size: 0.55rem;
+    }
+
+    .project-grid {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    .work-heading p {
+      display: none;
+    }
+
+    .project-info {
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+
+    .contact {
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+
+    .contact-studio {
+      font-size: 0.5rem;
+    }
+
+    .contact-content {
+      padding: 4rem 0;
+    }
+
+    .contact-inner {
+      padding: 2rem 1.5rem;
+    }
+
+    .contact-kicker {
+      font-size: 0.56rem;
+      margin-bottom: 2rem;
+    }
+
+    .contact-content h2 {
+      font-size: clamp(2.6rem, 11vw, 4.5rem);
+    }
+
+    .contact-content p {
+      font-size: 0.9rem;
+    }
+
+    .contact-cta {
+      font-size: 0.7rem;
+    }
+
+    .footer {
+      font-size: 0.55rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(html) {
+      scroll-behavior: auto;
+    }
+
+    .hero-content {
+      animation: none;
+    }
+
+    .project-card {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .project-media img,
+    .contact-glass,
+    .contact-cta,
+    .contact-cta span:last-child {
+      transition: none;
+    }
+  }
+  
+/* ABOUT SECTION — CINEMATIC VIDEO BACKGROUND */
+
+.about {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #101318;
+}
+
+.about-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.about-video-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(8, 11, 17, 0.88) 0%,
+      rgba(8, 11, 17, 0.75) 50%,
+      rgba(8, 11, 17, 0.83) 100%
+    );
+}
+
+.about .section-index,
+.about .about-content {
+  position: relative;
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-video {
+    display: none;
+  }
+}
 </style>
 
 <script>
-  const cards = document.querySelectorAll<HTMLElement>('.card');
-  const filterButtons = document.querySelectorAll<HTMLElement>('.filter-btn');
+  const cards =
+    document.querySelectorAll<HTMLElement>('.project-card');
 
-  const revealObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.15 }
-  );
+  const filterButtons =
+    document.querySelectorAll<HTMLButtonElement>('.filter-btn');
 
-  cards.forEach((card) => revealObserver.observe(card));
+  const reducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches;
+
+  if (!reducedMotion && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    cards.forEach((card) => observer.observe(card));
+  } else {
+    cards.forEach((card) => card.classList.add('visible'));
+  }
 
   filterButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
-      filterButtons.forEach((b) => b.classList.remove('active'));
-      btn.classList.add('active');
+      filterButtons.forEach((button) => {
+        button.classList.remove('active');
+        button.setAttribute('aria-pressed', 'false');
+      });
 
-      const selected = btn.getAttribute('data-filter');
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
+
+      const selected = btn.dataset.filter;
 
       cards.forEach((card) => {
-        const category = card.getAttribute('data-category');
+        const category = card.dataset.category;
+
         if (selected === 'All' || category === selected) {
           card.classList.remove('hidden-filter');
         } else {
@@ -377,11 +1437,17 @@ const filters = [
     });
   });
 
-  const allButton = document.querySelector<HTMLElement>('[data-filter="All"]');
-  if (allButton) allButton.classList.add('active');
+  const allButton = document.querySelector<HTMLButtonElement>(
+    '[data-filter="All"]'
+  );
 
-  const scrollBtn = document.getElementById('scroll-to-work');
-  scrollBtn?.addEventListener('click', () => {
-    document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' });
-  });
+  allButton?.classList.add('active');
+
+  const heroVideo =
+    document.querySelector<HTMLVideoElement>('.hero-video');
+
+  if (reducedMotion) {
+    heroVideo?.pause();
+  }
+
 </script>
