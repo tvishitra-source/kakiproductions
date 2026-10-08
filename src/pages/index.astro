@@ -136,7 +136,7 @@ const filters = [
         </h2>
 
         <div class="about-bottom">
-         <span class="asterisk" aria-hidden="true">&#10035;</span>
+         <span class="asterisk" aria-hidden="true"></span>
 
           <p>
             Kaki Productions is an independent production
@@ -1381,6 +1381,25 @@ rel="noopener noreferrer"
   .about-video {
     display: none;
   }
+}
+/* Consistent About section starburst — no emoji */
+
+.asterisk {
+  display: inline-block;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  background: #f2644b;
+  clip-path: polygon(
+    47% 0%, 53% 0%, 53% 39%,
+    78% 11%, 82% 15%, 57% 44%,
+    100% 47%, 100% 53%, 57% 53%,
+    82% 85%, 78% 89%, 53% 61%,
+    53% 100%, 47% 100%, 47% 61%,
+    22% 89%, 18% 85%, 43% 56%,
+    0% 53%, 0% 47%, 43% 47%,
+    18% 15%, 22% 11%, 47% 39%
+  );
 }
 </style>
 
