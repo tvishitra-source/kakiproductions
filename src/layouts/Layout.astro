@@ -22,9 +22,27 @@
 	<body>
 		<header class="site-header">
 			<div class="avargal-wrap">
-				<a href="https://instagram.com/avargal.stories" target="_blank" class="avargal-link">
-					அவர்கள் AVARGAL ↗
-				</a>
+		<a
+  href="https://instagram.com/avargal.stories"
+  target="_blank"
+  rel="noopener noreferrer"
+  class="avargal-link"
+>
+  அவர்கள் AVARGAL
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M5 19L19 5M7 5H19V17" />
+  </svg>
+</a>
 				<span class="avargal-tooltip">Our sister label for cinematic pre-wedding films.</span>
 			</div>
 		</header>
@@ -82,17 +100,28 @@
 	}
 
 	.avargal-link {
-		font-family: var(--font-body);
-		font-size: 0.7rem;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: rgba(255, 255, 255, 0.85);
-		text-decoration: none;
-		border: 1px solid rgba(255, 255, 255, 0.35);
-		padding: 0.4rem 0.9rem;
-		border-radius: 30px;
-		transition: all 0.3s ease;
-	}
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 0.4rem 0.9rem;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+}
+
+.avargal-link svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
 
 	.avargal-link:hover {
 		color: #fff;
